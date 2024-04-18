@@ -17,7 +17,7 @@ export default function CharacterCard({
   id,
 }: CharacterCardProps) {
   return (
-    <div className={style.container}>
+    <div className={style.cardContainer}>
       <h3>{name}</h3>
 
       <article className={style.informationGrid}>

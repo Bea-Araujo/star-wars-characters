@@ -1,5 +1,5 @@
 
-.container{
+.cardContainer{
     background-color: #ffffff2b;
     background: radial-gradient(transparent 5%, #ffffff2b);
     backdrop-filter: blur(4px);
@@ -10,7 +10,7 @@
     flex-direction: column;
 }
 
-.container:hover{
+.cardContainer:hover{
     background: radial-gradient(transparent -96%, rgba(255, 255, 255, 0.19));
     box-shadow: 3px 0px 10px 2px #bb3232, 9px 10px 20px 6px #691313, -3px 10px 10px 2px #3234bb, -9px -10px 20px 6px #0b0d61;
 
