@@ -1,4 +1,6 @@
+import Link from "next/link"
 import { Character, CustomError, FilmsDTO, PlanetDTO, SpeciesDTO, StarshipsDTO, VehiclesDTO } from "../libs/types"
+import styles from './page.module.css'
 
 interface DetailedCharacterPage{
     params: {
@@ -23,7 +25,6 @@ async function fetchCharacterById(id: string){
         newData.vehiclesData = vehicles;
         newData.starshipsData = starships;
         newData.filmsData = films;
-        console.log(newData)
         return newData
     } catch(e) {
         return new CustomError("Unable to get character's data")
@@ -41,13 +42,9 @@ async function fetchManyUrls(urls: string[] ){
 }
 
 export default async function DetailedCharacterPage({params: {id}}: DetailedCharacterPage) {
-    console.log(id)
     const character: Character | CustomError = await fetchCharacterById(id)
-    console.log(character)
 
-    type CharacterFields = Pick<Character, "name" | "height" | "mass" | "gender"| "eyeColor" | "hairColor" | "skinColor" | "birthYear">;
-
-    const fields: CharacterFields = {
+    const fields = {
         name: "Name",
         height: "Height",
         mass: "Weight",
@@ -84,7 +81,7 @@ export default async function DetailedCharacterPage({params: {id}}: DetailedChar
         manufacturer: "Manufacturer",
         cost_in_credits: "Cost",
         length: "Length",
-        max_atmospheric_speed: "Max atmospheric speed",
+        max_atmosphering_speed: "Max atmospheric speed",
         cargo_capacity: "Cargo capacity",
         consumables: "Consumables",
         vehicle_class: "Vehicle class"
@@ -96,7 +93,7 @@ export default async function DetailedCharacterPage({params: {id}}: DetailedChar
         manufacturer: "Manufacturer",
         cost_in_credits: "Cost",
         length: "Length",
-        max_atmospheric_speed: "Max atmospheric speed",
+        max_atmosphering_speed: "Max atmospheric speed",
         cargo_capacity: "Cargo capacity",
         consumables: "Consumables",
         hyperdrive_rating: 'Hyperdrive rating',
@@ -107,7 +104,7 @@ export default async function DetailedCharacterPage({params: {id}}: DetailedChar
     function createRowsOfData(typeOfField: string, fieldsObject: Record<string, string>, valueObject: any){
         return Object.entries(fieldsObject).map(([key, value]) => {
             return (
-                <article key={`${typeOfField}-${key}`}>
+                <article key={`${typeOfField}-${key}`} className={styles.informationRow}>
                     <p>{value}</p>
                     <p>{valueObject[key]}</p>
                 </article>
@@ -116,34 +113,48 @@ export default async function DetailedCharacterPage({params: {id}}: DetailedChar
     }
 
     return character instanceof CustomError? (
-        <main>
+        <main className={styles.pageContent}>
             <p>{character.errorDescription}</p>
         </main>
     ) : (
-        <main>
-            <div>
+        <main className={styles.pageContent}>
+            <Link href={'/'}>Go back</Link>
+            <div className={styles.informationCardContainer}>
                 <h3>Character data</h3>
-                { createRowsOfData('character-fields', fields, character) }
+                <div className={styles.informationGrid}>
+                    { createRowsOfData('character-fields', fields, character) }
+                </div>
             </div>
 
-            <div>
+            <div className={styles.informationCardContainer}>
                 <h3>Homeworld data</h3>
+                <div className={styles.informationGrid}>
                 { createRowsOfData('character-fields', homeworldFields, character.homeworldData) }
+                </div>
             </div>
 
-            <div>
+            <div className={styles.informationCardContainer}>
                 <h3>Films data</h3>
+                <div className={styles.informationGrid}>
+
                 { character.filmsData!.map(film => createRowsOfData('character-fields', filmFields, film))}
+                </div>
             </div>
 
-            <div>
+            <div className={styles.informationCardContainer}>
                 <h3>Vehicles data</h3>
+                <div className={styles.informationGrid}>
+
                 { character.vehiclesData!.map(vehicle => createRowsOfData('character-fields', vehicleFields, vehicle))}
+                </div>
             </div>
 
-            <div>
+            <div className={styles.informationCardContainer}>
                 <h3>Starships data</h3>
+                <div className={styles.informationGrid}>
+
                 { character.starshipsData!.map(starship => createRowsOfData('character-fields', starshipFields, starship))}
+                </div>
             </div>
         </main>
     )

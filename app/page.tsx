@@ -12,12 +12,12 @@ export default function Home() {
   }, [page]);
 
   function increasePage() {
-    if (isPageMax) return;
+    if (isPageMax || isLoading) return;
     setPage((previousPage) => previousPage + 1);
   }
 
   function decreasePage() {
-    if (isPageMin) return;
+    if (isPageMin || isLoading) return;
     setPage((previousPage) => previousPage - 1);
   }
 
@@ -63,9 +63,14 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <p>
-        {page} / {maxPage}
-      </p>
+      
+      <div className={styles.navigationContainer}>
+        <button className={`${styles.previous} ${(isPageMin? styles.inactive : '')}`} onClick={decreasePage}>Previous</button>
+        <p>
+          {page} / {maxPage}
+        </p>
+        <button className={`${styles.next} ${(isPageMax && styles.inactive)}`} onClick={increasePage}>Next</button>
+      </div>
 
       {isLoading && <p>Loading</p>}
 
@@ -88,8 +93,6 @@ export default function Home() {
         )}
       </section>
 
-      <button onClick={decreasePage}>previous</button>
-      <button onClick={increasePage}>next</button>
     </main>
   );
 }

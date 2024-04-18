@@ -1,0 +1,38 @@
+.pageContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+.informationCardContainer {
+  width: max-content;
+  height: 100%;
+  background-color: rgba(234, 234, 234, .4);
+  padding: 1rem;
+  border-radius: 25px;
+}
+
+.informationRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.informationRow > :nth-child(2n){
+  text-align: right;
+}
+
+
+
+/* Mobile */
+@media (max-width: 700px) {
+  
+}
+
+/* Tablet and Smaller Desktop */
+@media (min-width: 701px) and (max-width: 1120px) {
+  
+}
