@@ -1,4 +1,4 @@
-import { Character, CustomError } from "../libs/types"
+import { Character, CustomError, FilmsDTO, PlanetDTO, SpeciesDTO, StarshipsDTO, VehiclesDTO } from "../libs/types"
 
 interface DetailedCharacterPage{
     params: {
@@ -12,11 +12,11 @@ async function fetchCharacterById(id: string){
         const data = await response.json()
         const newData = new Character(data)
 
-        const homeworld = await fetchAdditionalData(newData.homeworld)
-        const species = await fetchManyUrls(newData.species);
-        const vehicles = await fetchManyUrls(newData.vehicles);
-        const starships = await fetchManyUrls(newData.starships)
-        const films = await fetchManyUrls(newData.films)
+        const homeworld: PlanetDTO = await fetchAdditionalData(newData.homeworld)
+        const species: SpeciesDTO[] = await fetchManyUrls(newData.species);
+        const vehicles: VehiclesDTO[] = await fetchManyUrls(newData.vehicles);
+        const starships: StarshipsDTO[] = await fetchManyUrls(newData.starships)
+        const films: FilmsDTO[] = await fetchManyUrls(newData.films)
 
         newData.homeworldData = homeworld;
         newData.speciesData = species;
@@ -68,6 +68,18 @@ export default async function DetailedCharacterPage({params: {id}}: DetailedChar
         terrain: 'Terrain',
         surface_water: 'Surface water',
         population: 'Population',
+    }
+
+    const filmFields = {
+
+    }
+
+    const VehicleFields = {
+
+    }
+
+    const starshipFields = {
+        
     }
 
     return character instanceof CustomError? (

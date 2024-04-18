@@ -35,16 +35,20 @@ export class Character{
     gender: string
     
     homeworld: string
-    homeworldData?: {}
+    homeworldData?: PlanetDTO
 
     films: string[]
-    filmsData?: {}
+    filmsData?: FilmsDTO[]
+
     species: string[]
-    speciesData?: {}
+    speciesData?: SpeciesDTO[]
+
     vehicles: string[]
-    vehiclesData?: {}
+    vehiclesData?: VehiclesDTO[]
+
     starships: string[]
-    starshipsData?: {}
+    starshipsData?: StarshipsDTO[]
+    
     url: string
         
     hairColor: string
@@ -92,6 +96,88 @@ export class PlanetDTO{
     ) {}
 }
 
+export class SpeciesDTO{
+    constructor(
+        public name: string,
+        public classification: string,
+        public designation: string,
+        public average_height: string,
+        public skin_colors: string,
+        public hair_colors: string,
+        public eye_colors: string,
+        public average_lifespan: string,
+        public homeworld:  string,
+        public language: string,
+        public people: string[],
+        public films: string[],
+        public created: string,
+        public edited: string,
+        public url: string
+    ) {}
+}
+
+export class VehiclesDTO{
+    constructor(
+        public name: string,
+        public model: string,
+        public manufacturer: string,
+        public cost_in_credits: string,
+        public length: string,
+        public max_atmosphering_speed: string,
+        public crew: string,
+        public passengers: string,
+        public cargo_capacity: string,
+        public consumables: string,
+        public vehicle_class: string,
+        public pilots: string[],
+        public films: string[],
+        public created: string,
+        public edited: string,
+        public url: string
+    ) {}
+}
+
+export class StarshipsDTO{
+    constructor(
+        public name: string,
+        public model: string,
+        public manufacturer: string,
+        public cost_in_credits: string,
+        public length: string,
+        public max_atmosphering_speed: string,
+        public crew: string,
+        public passengers: string,
+        public cargo_capacity: string,
+        public consumables: string,
+        public hyperdrive_rating: string,
+        public MGLT: string,
+        public starship_class: string,
+        public pilots: string[],
+        public films: string[],
+        public created: string,
+        public edited: string,
+        public url: string
+    ) {}
+}
+
+export class FilmsDTO{
+    constructor(
+        public title: string,
+        public episode_id: string,
+        public opening_crawl: string,
+        public director: string,
+        public producer: string,
+        public release_date: string,
+        public characters: string[],
+        public planets: string[],
+        public starships: string[],
+        public vehicles: string[],
+        public species: string[],
+        public created: string,
+        public edited: string,
+        public url: string
+    ) {}
+}
 export class CustomError {
     error: boolean
     errorDescription?: string
