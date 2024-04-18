@@ -62,6 +62,8 @@ body {
     )
     rgb(var(--background-start-rgb)); */
     background-color: #181818;
+    background: url(https://i.pinimg.com/originals/d7/a6/11/d7a61190a836bdcfc62bf97af4f4c74b.png);
+    background-size: 25%;
 }
 
 a {
