@@ -1,4 +1,4 @@
-import { Character } from "../libs/types"
+import { Character, CustomError } from "../libs/types"
 
 interface DetailedCharacterPage{
     params: {
@@ -7,13 +7,27 @@ interface DetailedCharacterPage{
 }
 
 async function fetchCharacterById(id: string){
-    const response = await fetch(`https://swapi.dev/api/people/${id}`)
-    const data = await response.json()
-    console.log(data)
-    const newData = new Character(data)
-  
-    
-    return newData
+    try {
+        const response = await fetch(`https://swapi.dev/api/people/${id}`)
+        const data = await response.json()
+        const newData = new Character(data)
+
+        const homeworld = await fetchAdditionalData(newData.homeworld)
+        const species = await fetchManyUrls(newData.species);
+        const vehicles = await fetchManyUrls(newData.vehicles);
+        const starships = await fetchManyUrls(newData.starships)
+        const films = await fetchManyUrls(newData.films)
+
+        newData.homeworldData = homeworld;
+        newData.speciesData = species;
+        newData.vehiclesData = vehicles;
+        newData.starshipsData = starships;
+        newData.filmsData = films;
+        console.log(newData)
+        return newData
+    } catch(e) {
+        return new CustomError("Unable to get character's data")
+    }   
 }
 
 async function fetchAdditionalData(url: string) {
@@ -22,20 +36,22 @@ async function fetchAdditionalData(url: string) {
     return data;
 }
 
+async function fetchManyUrls(urls: string[] ){
+    return await Promise.all(urls.map(url => fetchAdditionalData(url)));
+}
+
 export default async function DetailedCharacterPage({params: {id}}: DetailedCharacterPage) {
     console.log(id)
-    const character: Character = await fetchCharacterById(id)
+    const character: Character | CustomError = await fetchCharacterById(id)
     console.log(character)
 
-    const fields = {
+    type CharacterFields = Pick<Character, "name" | "height" | "mass" | "gender"| "eyeColor" | "hairColor" | "skinColor" | "birthYear">;
+
+    const fields: CharacterFields = {
         name: 'Name',
         height: "Height",
         mass: "Weight",
         gender: "Gender",
-        films: "Films",
-        species: "Species",
-        vehicles: "Vehicles",
-        starships: "Starships",
         eyeColor: "Eye color",
         hairColor: "Hair color",
         skinColor: "Skin color",
@@ -54,17 +70,41 @@ export default async function DetailedCharacterPage({params: {id}}: DetailedChar
         population: 'Population',
     }
 
-    return (
+    return character instanceof CustomError? (
         <main>
-            {/* {
-                Object.entries(fields).map(([key, value]) => {
-                    return (
-                        <p key={`field-${key}`}>{value} and {character[key]}</p>
-                    )
-                })
-            }
-             */}
-             aaa
+            <p>{character.errorDescription}</p>
+        </main>
+    ) : (
+        <main>
+            <div>
+                <h3>Character data</h3>
+                {
+                    Object.entries(fields).map(([key, value]) => {
+                        return (
+                            <article key={`field-${key}`}>
+                                <p>{value}</p>
+                                <p>{character[key as keyof CharacterFields]}</p>
+                            </article>
+                        )
+                    })
+                }
+            </div>
+
+            <div>
+                <h3>Homeworld data</h3>
+            </div>
+
+            <div>
+                <h3>Films data</h3>
+            </div>
+
+            <div>
+                <h3>Vehicles data</h3>
+            </div>
+
+            <div>
+                <h3>Starships data</h3>
+            </div>
         </main>
     )
 }

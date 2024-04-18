@@ -38,13 +38,13 @@ export class Character{
     homeworldData?: {}
 
     films: string[]
-    filmsData?: string[]
+    filmsData?: {}
     species: string[]
-    speciesData?: string[]
+    speciesData?: {}
     vehicles: string[]
-    vehiclesData?: string[]
+    vehiclesData?: {}
     starships: string[]
-    starshipsData?: string[]
+    starshipsData?: {}
     url: string
         
     hairColor: string
@@ -90,4 +90,14 @@ export class PlanetDTO{
         public population: string,
         public residents: string[]
     ) {}
+}
+
+export class CustomError {
+    error: boolean
+    errorDescription?: string
+
+    constructor(description?: string){
+        this.error = !!description;
+        if (this.error) this.errorDescription = description
+    }
 }
