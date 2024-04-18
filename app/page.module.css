@@ -48,7 +48,7 @@
 .cardsGrid{
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 200px));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 300px));
   justify-content: center;
   gap: 1rem;
   position: relative;

@@ -9,6 +9,17 @@
 }
 
 .container:hover{
-    background: radial-gradient(transparent -96%, rgba(255, 255, 255, 0.25));
+    background: radial-gradient(transparent -96%, rgba(255, 255, 255, 0.19));
     box-shadow: 3px 0px 10px 2px #bb3232, 9px 10px 20px 6px #691313, -3px 10px 10px 2px #3234bb, -9px -10px 20px 6px #0b0d61
+}
+
+.informationGrid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .25rem;
+    margin: .5rem 0;
+}
+
+.informationGrid > :nth-child(2n){
+    text-align: right;
 }
