@@ -1,7 +1,7 @@
 import Link from "next/link";
-import style from "./characterCard.module.css"
+import style from "./characterCard.module.css";
 
-interface CharacterCardProps{
+interface CharacterCardProps {
   height: string;
   mass: string;
   gender: string;
@@ -9,19 +9,27 @@ interface CharacterCardProps{
   id: string;
 }
 
-export default function CharacterCard({height, mass, gender, name, id}: CharacterCardProps) {
-    return (
-      <div className={style.container}>
-        <h3>{name}</h3>
+export default function CharacterCard({
+  height,
+  mass,
+  gender,
+  name,
+  id,
+}: CharacterCardProps) {
+  return (
+    <div className={style.cardContainer}>
+      <h3>{name}</h3>
 
-        <p>Height: {height}cm</p>
-        <p>Weight: {mass}kg</p>
-        <p>Gender: {gender}</p>
-        {id}
+      <article className={style.informationGrid}>
+        <p>Height: </p>
+        <p>{height}cm</p>
+        <p>Weight:</p>
+        <p> {mass}kg</p>
+        <p>Gender: </p>
+        <p> {gender}</p>
+      </article>
 
-        <p>See more -&gt;</p>
-        <Link href={`/${id}`}>See more</Link>
-      </div>
-    );
-  }
-  
+      <Link className={style.moreDetails} href={`/${id}`}>See more</Link>
+    </div>
+  );
+}

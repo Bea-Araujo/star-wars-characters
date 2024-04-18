@@ -1,70 +1,238 @@
-import { Character } from "../libs/types"
+import Link from "next/link";
+import {
+  Character,
+  CustomError,
+  FilmsDTO,
+  PlanetDTO,
+  SpeciesDTO,
+  StarshipsDTO,
+  VehiclesDTO,
+} from "../libs/types";
+import styles from "./page.module.css";
 
-interface DetailedCharacterPage{
-    params: {
-        id: string
-    }
+interface DetailedCharacterPage {
+  params: {
+    id: string;
+  };
 }
 
-async function fetchCharacterById(id: string){
-    const response = await fetch(`https://swapi.dev/api/people/${id}`)
-    const data = await response.json()
-    console.log(data)
-    const newData = new Character(data)
-  
-    
-    return newData
+async function fetchCharacterById(id: string) {
+  try {
+    const response = await fetch(`https://swapi.dev/api/people/${id}`);
+    const data = await response.json();
+    const newData = new Character(data);
+
+    const homeworld: PlanetDTO = await fetchAdditionalData(newData.homeworld);
+    const species: SpeciesDTO[] = await fetchManyUrls(newData.species);
+    const vehicles: VehiclesDTO[] = await fetchManyUrls(newData.vehicles);
+    const starships: StarshipsDTO[] = await fetchManyUrls(newData.starships);
+    const films: FilmsDTO[] = await fetchManyUrls(newData.films);
+
+    newData.homeworldData = homeworld;
+    newData.speciesData = species;
+    newData.vehiclesData = vehicles;
+    console.log(vehicles)
+    newData.starshipsData = starships;
+    newData.filmsData = films;
+    return newData;
+  } catch (e) {
+    return new CustomError("Unable to get character's data");
+  }
 }
 
 async function fetchAdditionalData(url: string) {
-    const response = await fetch(url)
-    const data = await response.json()
-    return data;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
 }
 
-export default async function DetailedCharacterPage({params: {id}}: DetailedCharacterPage) {
-    console.log(id)
-    const character: Character = await fetchCharacterById(id)
-    console.log(character)
+async function fetchManyUrls(urls: string[]) {
+  return await Promise.all(urls.map((url) => fetchAdditionalData(url)));
+}
 
-    const fields = {
-        name: 'Name',
-        height: "Height",
-        mass: "Weight",
-        gender: "Gender",
-        films: "Films",
-        species: "Species",
-        vehicles: "Vehicles",
-        starships: "Starships",
-        eyeColor: "Eye color",
-        hairColor: "Hair color",
-        skinColor: "Skin color",
-        birthYear: 'Year of birth',
-    }
+export default async function DetailedCharacterPage({
+  params: { id },
+}: DetailedCharacterPage) {
+  const character: Character | CustomError = await fetchCharacterById(id);
 
-    const homeworldFields = {
-        name: 'Name',
-        rotation_period: 'Rotation period',
-        orbital_period: 'Orbital period',
-        diameter: 'Diameter',
-        climate: 'Climate',
-        gravity: 'Gravity',
-        terrain: 'Terrain',
-        surface_water: 'Surface water',
-        population: 'Population',
-    }
+  const fields = {
+    name: "Name",
+    height: "Height",
+    mass: "Weight",
+    gender: "Gender",
+    eyeColor: "Eye color",
+    hairColor: "Hair color",
+    skinColor: "Skin color",
+    birthYear: "Year of birth",
+  };
 
-    return (
-        <main>
-            {/* {
-                Object.entries(fields).map(([key, value]) => {
-                    return (
-                        <p key={`field-${key}`}>{value} and {character[key]}</p>
-                    )
-                })
-            }
-             */}
-             aaa
-        </main>
-    )
+  const homeworldFields = {
+    name: "Name",
+    rotation_period: "Rotation period",
+    orbital_period: "Orbital period",
+    diameter: "Diameter",
+    climate: "Climate",
+    gravity: "Gravity",
+    terrain: "Terrain",
+    surface_water: "Surface water",
+    population: "Population",
+  };
+
+  const speciesFields = {
+    name: "Name",
+    classification: "Classification",
+    designation: "Designation",
+    average_height: "Avg height",
+    skin_colors: 'Skin color',
+    hair_colors: 'Hair color',
+    eye_colors: 'Eye color',
+    average_lifespan: 'Avg lifespan',
+    homeworld:  'Homeworld',
+    language: 'Language',
+  };
+
+  const filmFields = {
+    title: "Title",
+    episode_id: "Episode",
+    director: "Director",
+    producer: "Producer",
+    release_date: "Release date",
+  };
+
+  const vehicleFields = {
+    name: "Name",
+    model: "Model",
+    manufacturer: "Manufacturer",
+    cost_in_credits: "Cost",
+    length: "Length",
+    max_atmosphering_speed: "Max atmospheric speed",
+    cargo_capacity: "Cargo capacity",
+    consumables: "Consumables",
+    vehicle_class: "Vehicle class",
+  };
+
+  const starshipFields = {
+    name: "Name",
+    model: "Model",
+    manufacturer: "Manufacturer",
+    cost_in_credits: "Cost",
+    length: "Length",
+    max_atmosphering_speed: "Max atmospheric speed",
+    cargo_capacity: "Cargo capacity",
+    consumables: "Consumables",
+    hyperdrive_rating: "Hyperdrive rating",
+    MGLT: "MGLT",
+    starship_class: "Vehicle class",
+  };
+
+  function createCardHeader(title: string, referenceValues: any[]){
+    return <article className={styles.cardHeader}>
+        <h3>{title}</h3>
+        {referenceValues.length === 0 && <span className={styles.cardHeaderNoData}>NO DATA</span>}
+    </article>
+  }
+
+  function createRowsOfData(
+    typeOfField: string,
+    fieldsObject: Record<string, string>,
+    valueObject: any
+  ) {
+    return Object.entries(fieldsObject).map(([key, value]) => {
+      return (
+        <article
+          key={`${typeOfField}-${key}`}
+          className={styles.informationRow}
+        >
+          <p>{value}</p>
+          <p>{valueObject[key]}</p>
+        </article>
+      );
+    });
+  }
+
+  function createRowsOfSubData(
+    typeOfField: string,
+    fieldsObject: Record<string, string>,
+    arrayOfValues: any[]
+  ) {
+    return arrayOfValues.map((objectValue, i) => {
+      return (
+        <div key={`${typeOfField}-${i}`}>
+          {createRowsOfData(typeOfField, fieldsObject, objectValue)}
+        </div>
+      );
+    });
+  }
+
+  return character instanceof CustomError ? (
+    <main className={styles.pageContent}>
+      <p>{character.errorDescription}</p>
+    </main>
+  ) : (
+    <main className={styles.pageContent}>
+      <Link className={styles.navigationBtn} href={"/"}>
+        <span className="material-symbols-outlined">arrow_back</span>
+        Go back</Link>
+
+      <section className={styles.cardsContainer}>
+      <div className={styles.cardContainer}>
+        <h3>Character data</h3>
+        <div className={styles.informationGrid}>
+          {createRowsOfData("character-fields", fields, character)}
+        </div>
+      </div>
+
+      <div className={styles.cardContainer}>
+        <h3>Homeworld data</h3>
+        <div className={styles.informationGrid}>
+          {createRowsOfData(
+            "homeworld-fields",
+            homeworldFields,
+            character.homeworldData
+          )}
+        </div>
+      </div>
+
+      <div className={styles.cardContainer}>
+      {createCardHeader('Species data',  character.speciesData!)}
+        <div className={styles.informationGrid}>
+          {createRowsOfSubData(
+            "species-fields",
+            speciesFields,
+            character.speciesData!
+          )}
+        </div>
+      </div>
+
+      <div className={styles.cardContainer}>
+          {createCardHeader('Vehicles data',  character.vehiclesData!)}
+        <div className={styles.informationGrid}>
+          {createRowsOfSubData(
+            "vehicle-fields",
+            vehicleFields,
+            character.vehiclesData!
+          )}
+        </div>
+      </div>
+
+      <div className={styles.cardContainer}>
+      {createCardHeader('Starships data',  character.starshipsData!)}
+        <div className={styles.informationGrid}>
+          {createRowsOfSubData(
+            "starships-fields",
+            starshipFields,
+            character.starshipsData!
+          )}
+        </div>
+      </div>
+
+      <div className={styles.cardContainer}>
+      {createCardHeader('Films data',  character.filmsData!)}
+        <div className={styles.informationGrid}>
+          {createRowsOfSubData("film-fields", filmFields, character.filmsData!)}
+        </div>
+      </div>
+      </section>
+    </main>
+  );
 }

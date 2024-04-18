@@ -12,12 +12,12 @@ export default function Home() {
   }, [page]);
 
   function increasePage() {
-    if (isPageMax) return;
+    if (isPageMax || isLoading) return;
     setPage((previousPage) => previousPage + 1);
   }
 
   function decreasePage() {
-    if (isPageMin) return;
+    if (isPageMin || isLoading) return;
     setPage((previousPage) => previousPage - 1);
   }
 
@@ -34,7 +34,7 @@ export default function Home() {
   }, [maxPage, page]);
 
   const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   async function fetchCharacters() {
     try {
@@ -49,6 +49,7 @@ export default function Home() {
       return;
     } catch (e) {
       setError(true);
+      setResults(null);
       setPage(1);
       setCount(0);
     } finally {
@@ -63,15 +64,26 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <p>
-        {page} / {maxPage}
-      </p>
-
-      {isLoading && <p>Loading</p>}
+      
+      <div className={styles.navigationContainer}>
+        <button className={`${styles.previous} ${(isPageMin? styles.inactive : '')}`} onClick={decreasePage}>Previous</button>
+        <p className={styles.navigationNumbers}>
+          {page} / {maxPage}
+        </p>
+        <button className={`${styles.next} ${(isPageMax && styles.inactive)}`} onClick={increasePage}>Next</button>
+      </div>
 
       <section className={styles.cardsGrid}>
+      
         {results === null ? (
-          <p>aaa</p>
+          <div>
+            {isLoading?
+              <p></p> :
+              error?
+              <p>The dark side of the force has landed an attack! Please try refreshing the page</p>:
+              <p>No results found</p>
+            }
+          </div>
         ) : (
           results.map((el, i) => {
             return (
@@ -86,10 +98,15 @@ export default function Home() {
             );
           })
         )}
+
+        { 
+          isLoading &&
+          <div className={styles.loader}>
+            
+          </div>
+        }
       </section>
 
-      <button onClick={decreasePage}>previous</button>
-      <button onClick={increasePage}>next</button>
     </main>
   );
 }
