@@ -68,7 +68,13 @@ export default function Home() {
       <div className={styles.navigationContainer}>
         <button className={`${styles.previous} ${(isPageMin? styles.inactive : '')}`} onClick={decreasePage}>Previous</button>
         <p className={styles.navigationNumbers}>
-          {page} / {maxPage}
+          <span id='current-page'>
+            {page} 
+          </span>
+            / 
+          <span id="last-page">
+            {maxPage}
+          </span>
         </p>
         <button className={`${styles.next} ${(isPageMax && styles.inactive)}`} onClick={increasePage}>Next</button>
       </div>
