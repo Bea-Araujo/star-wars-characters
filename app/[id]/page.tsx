@@ -31,6 +31,7 @@ async function fetchCharacterById(id: string) {
     newData.homeworldData = homeworld;
     newData.speciesData = species;
     newData.vehiclesData = vehicles;
+    console.log(vehicles)
     newData.starshipsData = starships;
     newData.filmsData = films;
     return newData;
@@ -77,6 +78,19 @@ export default async function DetailedCharacterPage({
     population: "Population",
   };
 
+  const speciesFields = {
+    name: "Name",
+    classification: "Classification",
+    designation: "Designation",
+    average_height: "Avg height",
+    skin_colors: 'Skin color',
+    hair_colors: 'Hair color',
+    eye_colors: 'Eye color',
+    average_lifespan: 'Avg lifespan',
+    homeworld:  'Homeworld',
+    language: 'Language',
+  };
+
   const filmFields = {
     title: "Title",
     episode_id: "Episode",
@@ -110,6 +124,13 @@ export default async function DetailedCharacterPage({
     MGLT: "MGLT",
     starship_class: "Vehicle class",
   };
+
+  function createCardHeader(title: string, referenceValues: any[]){
+    return <article className={styles.cardHeader}>
+        <h3>{title}</h3>
+        {referenceValues.length === 0 && <span className={styles.cardHeaderNoData}>NO DATA</span>}
+    </article>
+  }
 
   function createRowsOfData(
     typeOfField: string,
@@ -173,7 +194,18 @@ export default async function DetailedCharacterPage({
       </div>
 
       <div className={styles.cardContainer}>
-        <h3>Vehicles data</h3>
+      {createCardHeader('Species data',  character.speciesData!)}
+        <div className={styles.informationGrid}>
+          {createRowsOfSubData(
+            "species-fields",
+            speciesFields,
+            character.speciesData!
+          )}
+        </div>
+      </div>
+
+      <div className={styles.cardContainer}>
+          {createCardHeader('Vehicles data',  character.vehiclesData!)}
         <div className={styles.informationGrid}>
           {createRowsOfSubData(
             "vehicle-fields",
@@ -184,7 +216,7 @@ export default async function DetailedCharacterPage({
       </div>
 
       <div className={styles.cardContainer}>
-        <h3>Starships data</h3>
+      {createCardHeader('Starships data',  character.starshipsData!)}
         <div className={styles.informationGrid}>
           {createRowsOfSubData(
             "starships-fields",
@@ -195,7 +227,7 @@ export default async function DetailedCharacterPage({
       </div>
 
       <div className={styles.cardContainer}>
-        <h3>Films data</h3>
+      {createCardHeader('Films data',  character.filmsData!)}
         <div className={styles.informationGrid}>
           {createRowsOfSubData("film-fields", filmFields, character.filmsData!)}
         </div>
