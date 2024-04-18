@@ -34,7 +34,7 @@ export default function Home() {
   }, [maxPage, page]);
 
   const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   async function fetchCharacters() {
     try {
@@ -49,6 +49,7 @@ export default function Home() {
       return;
     } catch (e) {
       setError(true);
+      setResults(null);
       setPage(1);
       setCount(0);
     } finally {
@@ -72,11 +73,17 @@ export default function Home() {
         <button className={`${styles.next} ${(isPageMax && styles.inactive)}`} onClick={increasePage}>Next</button>
       </div>
 
-      {isLoading && <p>Loading</p>}
-
       <section className={styles.cardsGrid}>
+      
         {results === null ? (
-          <p>aaa</p>
+          <div>
+            {isLoading?
+              <p></p> :
+              error?
+              <p>The dark side of the force has landed an attack! Please try refreshing the page</p>:
+              <p>No results found</p>
+            }
+          </div>
         ) : (
           results.map((el, i) => {
             return (
@@ -91,6 +98,13 @@ export default function Home() {
             );
           })
         )}
+
+        { 
+          isLoading &&
+          <div className={styles.loader}>
+            
+          </div>
+        }
       </section>
 
     </main>

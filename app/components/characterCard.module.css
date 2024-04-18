@@ -1,6 +1,8 @@
 
 .container{
-    background-color: blueviolet;
+    background-color: #ffffff2b;
+    background: radial-gradient(transparent 5%, #ffffff2b);
+    backdrop-filter: blur(4px);
     border-radius: 25px;
     padding: 1rem;
 }

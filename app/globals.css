@@ -75,11 +75,12 @@ button{
   padding: .5rem;
   border-radius: 25px;
   border: none;
-  background-color: #c7c7c7b3;
+  background-color: #979797;
   color: #222222;
   min-width: 70px;
   transition: .3s;
   cursor: pointer;
+  font-weight: 600;
 }
 
 @media (prefers-color-scheme: dark) {
