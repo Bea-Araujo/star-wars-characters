@@ -29,7 +29,7 @@ export default function CharacterCard({
         <p> {gender}</p>
       </article>
 
-      <Link href={`/${id}`}>See more</Link>
+      <Link className={style.moreDetails} href={`/${id}`}>See more</Link>
     </div>
   );
 }
